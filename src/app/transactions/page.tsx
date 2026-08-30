@@ -1,22 +1,17 @@
 import { StatusBadge } from '@/components/badge/StatusBadge';
+import { DataTable, DataTableColumn } from '@/components/datatable/DataTable';
 import { NewTransactionButton } from '@/components/transactions/newTransactionButton';
 import { TransactionFilters } from '@/components/transactions/transactionFilters';
 import { listTransactions } from '@/services/transactionsService';
 import {
+  TransactionResponse,
   TransactionStatus,
   TransactionType,
 } from '@/types/transactions/transactionsTypes';
 import { formatCurrency, formatDateTime } from '@/utils/utlis';
 import {
   Box,
-  Typography,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
-  Paper,
+  Typography
 } from '@mui/material';
 
 const TYPE_LABELS: Record<string, string> = {
@@ -24,6 +19,36 @@ const TYPE_LABELS: Record<string, string> = {
   Payment: 'Pago',
   Transfer: 'Transferencia',
 };
+
+const columns: DataTableColumn<TransactionResponse>[] = [
+  {
+    key: 'type',
+    header: 'Tipo',
+    render: (tx) => TYPE_LABELS[tx.type] ?? tx.type,
+  },
+  {
+    key: 'amount',
+    header: 'Monto',
+    align: 'right',
+    render: (tx) => (
+      <Box>
+        {formatCurrency(tx.amount)}
+      </Box>
+    ),
+  },
+  {
+    key: 'status',
+    header: 'Estado',
+    render: (tx) => <StatusBadge status={tx.status} />,
+  },
+  {
+    key: 'createdAt',
+    header: 'Fecha',
+    render: (tx) => (
+      <Box sx={{ color: 'text.secondary' }}>{formatDateTime(tx.createdAt)}</Box>
+    ),
+  },
+];
 
 export default async function TransactionsPage({
   searchParams,
@@ -58,66 +83,14 @@ export default async function TransactionsPage({
         <TransactionFilters activeType={type} activeStatus={status} />
       </Box>
 
-      {transactions.length === 0 ? (
-        <Paper
-          variant="outlined"
-          sx={{
-            mt: 4,
-            p: 6,
-            textAlign: 'center',
-            borderStyle: 'dashed',
-            color: 'text.secondary',
-          }}
-        >
-          <Typography variant="body2">
-            No hay transacciones con estos filtros.
-          </Typography>
-        </Paper>
-      ) : (
-        <TableContainer component={Paper} variant="outlined" sx={{ mt: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow
-                sx={{
-                  '& th': {
-                    bgcolor: 'background.default',
-                    fontSize: 12,
-                    textTransform: 'uppercase',
-                  },
-                }}
-              >
-                <TableCell>Tipo</TableCell>
-                <TableCell align="right">Monto</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Fecha</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {transactions.map((tx) => (
-                <TableRow
-                  key={tx.id}
-                  hover
-                  sx={{ '&:last-child td': { border: 0 } }}
-                >
-                  <TableCell>{TYPE_LABELS[tx.type] ?? tx.type}</TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{ fontFamily: 'var(--font-mono)' }}
-                  >
-                    {formatCurrency(tx.amount)}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={tx.status} />
-                  </TableCell>
-                  <TableCell sx={{ color: 'text.secondary' }}>
-                    {formatDateTime(tx.createdAt)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+      <DataTable 
+        columns={columns}
+        rows={transactions}
+        getRowKey={(tx) => tx.id}
+        emptyMessage="No hay transacciones con estos filtros."
+        maxHeight={650}
+        stickyHeader
+      />
     </Box>
   );
 }

@@ -1,14 +1,48 @@
 import { PaymentScheduleItem } from '@/types/loans/loanTypes';
 import { formatCurrency, formatDate } from '@/utils/utlis';
 import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
-  Paper,
+  Box
 } from '@mui/material';
+import { DataTable, DataTableColumn } from '../datatable/DataTable';
+
+const columns: DataTableColumn<PaymentScheduleItem>[] = [
+  {
+    key: 'n',
+    header: '#',
+    render: (p) => (
+      <Box sx={{ color: 'text.secondary' }}>{p.paymentNumber}</Box>
+    ),
+  },
+  {
+    key: 'date',
+    header: 'Fecha de pago',
+    render: (p) => formatDate(p.dueDate),
+  },
+  {
+    key: 'total',
+    header: 'Cuota',
+    align: 'right',
+    render: (p) => formatCurrency(p.totalPayment),
+  },
+  {
+    key: 'principal',
+    header: 'Capital',
+    align: 'right',
+    render: (p) => formatCurrency(p.principal),
+  },
+  {
+    key: 'interest',
+    header: 'Interés',
+    align: 'right',
+    render: (p) => formatCurrency(p.interest),
+  },
+  {
+    key: 'balance',
+    header: 'Saldo',
+    align: 'right',
+    render: (p) => formatCurrency(p.remainingBalance),
+  },
+];
 
 export function PaymentScheduleTable({
   schedule,
@@ -16,60 +50,14 @@ export function PaymentScheduleTable({
   schedule: PaymentScheduleItem[];
 }) {
   return (
-    <TableContainer
-      component={Paper}
-      variant="outlined"
-      sx={{ overflowX: 'auto', maxHeight: 600 }}
-    >
-      <Table sx={{ minWidth: 720}} stickyHeader>
-        <TableHead>
-          <TableRow
-            sx={{
-              '& th': {
-                bgcolor: 'background.default',
-                fontSize: 12,
-                textTransform: 'uppercase',
-              },
-            }}
-          >
-            <TableCell>#</TableCell>
-            <TableCell>Fecha de pago</TableCell>
-            <TableCell align="right">Cuota</TableCell>
-            <TableCell align="right">Capital</TableCell>
-            <TableCell align="right">Interés</TableCell>
-            <TableCell align="right">Saldo</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {schedule.map((item) => (
-            <TableRow
-              key={item.paymentNumber}
-              hover
-              sx={{ '&:last-child td': { border: 0 } }}
-            >
-              <TableCell sx={{ color: 'text.secondary' }}>
-                {item.paymentNumber}
-              </TableCell>
-              <TableCell>{formatDate(item.dueDate)}</TableCell>
-              <TableCell align="right">
-                {formatCurrency(item.totalPayment)}
-              </TableCell>
-              <TableCell align="right" sx={{ color: 'text.secondary' }}>
-                {formatCurrency(item.principal)}
-              </TableCell>
-              <TableCell
-                align="right"
-                sx={{ color: 'text.secondary' }}
-              >
-                {formatCurrency(item.interest)}
-              </TableCell>
-              <TableCell align="right">
-                {formatCurrency(item.remainingBalance)}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <DataTable
+      columns={columns}
+      rows={schedule}
+      getRowKey={(p) => p.paymentNumber}
+      emptyMessage="No hay pagos programados."
+      minWidth={720}
+      maxHeight={600}
+      stickyHeader
+    />
   );
 }
