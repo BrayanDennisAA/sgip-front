@@ -1,69 +1,44 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import Link from '@/components/link/Link';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        maxWidth: 800,
+        margin: '0 auto',
+        py: 4,
+      }}
+    >
+      <Typography variant="h2" sx={{ fontWeight: 700, mb: 2 }}>
+        Sistema de Gestión de Préstamos
+      </Typography>
+
+      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
+        Simulá un préstamo, revisá el cronograma de pagos completo antes de
+        decidir, y hacé seguimiento de tus solicitudes y transacciones en un
+        solo lugar.
+      </Typography>
+
+      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+        <Button
+          component={Link}
+          href="/loans/simulate"
+          variant="contained"
+          size="large"
+          startIcon={
+            <LocalAtmIcon />
+          }
+        >
+          Simular préstamo
+        </Button>
+        <Button component={Link} href="/loans" variant="outlined" size="large">
+          Ver mis préstamos
+        </Button>
+      </Stack>
+    </Box>
   );
 }
