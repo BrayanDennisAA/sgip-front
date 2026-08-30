@@ -1,4 +1,5 @@
-import { SimulateForm } from '@/components/loans/SimulateForm';
+// import { SimulateForm } from '@/components/loans/SimulateForm';
+import { SimulateForm } from '@/components/loans/simulate/SimulateForm';
 import { Box, Typography, Alert } from '@mui/material';
 
 export default async function SimulatePage({
