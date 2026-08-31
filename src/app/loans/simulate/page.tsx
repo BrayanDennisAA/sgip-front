@@ -1,4 +1,3 @@
-// import { SimulateForm } from '@/components/loans/SimulateForm';
 import { SimulateForm } from '@/components/loans/simulate/SimulateForm';
 import { Box, Typography, Alert } from '@mui/material';
 
@@ -15,7 +14,7 @@ export default async function SimulatePage({
         Simular préstamo
       </Typography>
       <Typography variant="body2" sx={{ mt: 0.5 }}>
-        Completá el formulario y presioná «Calcular» para ver el cronograma.
+        Ajustá los valores del formulario para ver el cronograma.
       </Typography>
 
       {error && (
