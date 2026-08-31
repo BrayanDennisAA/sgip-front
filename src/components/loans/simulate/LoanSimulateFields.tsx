@@ -1,6 +1,6 @@
 'use client';
 import { SimulateFormValues } from '@/lib/schemas/loanSchemas';
-import { Box, Stack, TextField, Button, CircularProgress } from '@mui/material';
+import { Box, LinearProgress, Stack, TextField } from '@mui/material';
 import { Controller, type Control, type FieldErrors } from 'react-hook-form';
 import { LoanTypeToggle } from './LoanTypeToggle';
 
@@ -8,17 +8,15 @@ interface Props {
   control: Control<SimulateFormValues>;
   errors: FieldErrors<SimulateFormValues>;
   isCalculating: boolean;
-  onSubmit: (e: React.SyntheticEvent) => void;
 }
 
 export function LoanSimulateFields({
   control,
   errors,
   isCalculating,
-  onSubmit,
 }: Props) {
   return (
-    <Box component="form" onSubmit={onSubmit} noValidate>
+    <Box>
       <Stack spacing={3}>
         <Controller
           name="amount"
@@ -76,18 +74,7 @@ export function LoanSimulateFields({
           )}
         />
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={isCalculating}
-          startIcon={
-            isCalculating ? (
-              <CircularProgress size={16} color="inherit" />
-            ) : null
-          }
-        >
-          {isCalculating ? 'Calculando…' : 'Calcular'}
-        </Button>
+        <Box sx={{ height: 4 }}>{isCalculating && <LinearProgress />}</Box>
       </Stack>
     </Box>
   );

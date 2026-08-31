@@ -1,5 +1,5 @@
 'use client';
-import { Control, FieldErrors, useForm } from 'react-hook-form';
+import { Control, FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Paper, Stack, Grid } from '@mui/material';
 import { useLoanSimulation } from '@/hooks/useLoanSimulation';
@@ -10,6 +10,8 @@ import {
 import { LoanSimulateFields } from './LoanSimulateFields';
 import { LoanRequestForm } from './LoanRequestForm';
 import { SimulationResult } from './SimulationResult';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useEffect } from 'react';
 
 export function SimulateForm() {
   const {
@@ -21,12 +23,11 @@ export function SimulateForm() {
 
   const {
     control,
-    handleSubmit,
     getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(simulateLoanSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       amount: 5000,
       term: 12,
@@ -35,7 +36,16 @@ export function SimulateForm() {
     },
   });
 
-  const onCalculate = handleSubmit((values) => simulate(values));
+  const watchedValues = useWatch({ control });
+  const debouncedValues = useDebouncedValue(watchedValues, 400);
+
+  useEffect(() => {
+    const parsed = simulateLoanSchema.safeParse(debouncedValues);
+    if (parsed.success) {
+      simulate(parsed.data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(debouncedValues)]);
 
   return (
     <Grid container spacing={4}>
@@ -46,7 +56,6 @@ export function SimulateForm() {
               control={control as Control<SimulateFormValues>}
               errors={errors as FieldErrors<SimulateFormValues>}
               isCalculating={isCalculating}
-              onSubmit={onCalculate}
             />
             {result && (
               <LoanRequestForm values={getValues() as SimulateFormValues} />
@@ -56,7 +65,7 @@ export function SimulateForm() {
       </Grid>
 
       <Grid size={{ xs: 12, lg: 8 }}>
-        <SimulationResult result={result} error={simError} />
+        <SimulationResult result={result} error={simError} isCalculating={isCalculating}/>
       </Grid>
     </Grid>
   );

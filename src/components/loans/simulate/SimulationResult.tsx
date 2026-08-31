@@ -21,9 +21,10 @@ function SummaryCard({ label, value }: { label: string; value: string }) {
 interface Props {
   result: SimulateLoanResponse | null;
   error: string | null;
+  isCalculating: boolean;
 }
 
-export function SimulationResult({ result, error }: Props) {
+export function SimulationResult({ result, error, isCalculating }: Props) {
   if (error) return <Alert severity="error">{error}</Alert>;
 
   if (!result) {
@@ -37,13 +38,13 @@ export function SimulationResult({ result, error }: Props) {
           color: 'text.secondary',
         }}
       >
-        Completá el formulario y presioná «Calcular» para ver el cronograma.
+        Ajustá los valores del formulario para ver el cronograma.
       </Paper>
     );
   }
 
   return (
-    <Box>
+    <Box sx={{ opacity: isCalculating ? 0.6 : 1, transition: 'opacity 0.15s' }}>
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <SummaryCard
           label="Cuota mensual"

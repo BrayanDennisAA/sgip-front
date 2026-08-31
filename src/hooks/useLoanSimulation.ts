@@ -3,19 +3,25 @@ import type {
   SimulateLoanRequest,
   SimulateLoanResponse,
 } from '@/types/loans/loanTypes';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export function useLoanSimulation() {
   const [result, setResult] = useState<SimulateLoanResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const controllerRef = useRef<AbortController | null>(null);
 
   const loanTypesMap: Map<string, number> = new Map([
     ['Fixed', 0],
     ['Decreasing', 1],
   ]);
 
+  
   async function simulate(payload: SimulateLoanRequest) {
+    controllerRef.current?.abort();
+    const controller = new AbortController();
+    controllerRef.current = controller;
+    
     setIsCalculating(true);
     setError(null);
 
@@ -30,6 +36,7 @@ export function useLoanSimulation() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadParsed),
+        signal: controller.signal,
       });
 
       const data = await res.json();
@@ -39,12 +46,13 @@ export function useLoanSimulation() {
       setResult(data as SimulateLoanResponse);
       return data as SimulateLoanResponse;
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return null;
       const message = err instanceof Error ? err.message : 'Error desconocido.';
       setError(message);
       setResult(null);
       return null;
     } finally {
-      setIsCalculating(false);
+      if (controllerRef.current === controller) setIsCalculating(false);
     }
   }
 
