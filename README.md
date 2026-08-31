@@ -28,7 +28,7 @@ WebApp para la gestión de préstamos e inversiones con simulación y solicitud 
 
 | Link | Url |
 |------|-----|
-| Frontend | |
+| Frontend | [https://sgip-front.vercel.app/](https://sgip-front.vercel.app/) |
 
 ## Links Locales (Desarrollo)
 
@@ -107,7 +107,7 @@ sgip-front/
 │   │   ├── loans/          # Simulador, listado y detalle de préstamos
 │   │   └── transactions/   # Listado y filtros de transacciones
 │   ├── components/        # Componentes de UI reutilizables (DataTable, StatusBadge, etc.)
-│   ├── hooks/              # Custom hooks (useServerAction, useLoanSimulation)
+│   ├── hooks/              # Custom hooks (useServerAction, useLoanSimulation, useDebouncedValue)
 │   ├── lib/                 # Constantes y utilidades sin estado (sesión hardcodeada, etc.)
 │   ├── services/            # Cliente del backend .NET (fetch tipado, server-only).
 │   │                         # Es la ÚNICA capa que conoce la URL del backend.
@@ -179,17 +179,6 @@ dos transacciones duplicadas.
 - Sin autenticación: `userId` hardcodeado en `lib/session.ts`.
 - Sin tests automatizados de frontend.
 - Los límites de negocio están duplicados en frontend y backend un cambio de negocio requiere tocar ambos lados.
-- El simulador solo recalcula al enviar el formulario (botón «Calcular»),
-  no en cada tecla — decisión deliberada para evitar peticiones
-  innecesarias mientras el usuario todavía está completando los campos.
-
-
-## Mejoras Futuras
-
-- Implementar autenticación y autorización de usuarios para garantizar que solo los usuarios autorizados puedan acceder a ciertas funcionalidades.
-- Agregar pruebas unitarias y de integración para garantizar la calidad y estabilidad del código.
-- Mejorar la experiencia de usuario mediante la implementación de animaciones y transiciones suaves en la interfaz.
-- Implementar una arquitectura modular y escalable que permita agregar nuevas funcionalidades de manera eficiente.
 
 ## Mejoras futuras
  
