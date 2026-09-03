@@ -11,11 +11,6 @@ export function useLoanSimulation() {
   const [isCalculating, setIsCalculating] = useState(false);
   const controllerRef = useRef<AbortController | null>(null);
 
-  const loanTypesMap: Map<string, number> = new Map([
-    ['Fixed', 0],
-    ['Decreasing', 1],
-  ]);
-
   
   async function simulate(payload: SimulateLoanRequest) {
     controllerRef.current?.abort();
@@ -25,17 +20,11 @@ export function useLoanSimulation() {
     setIsCalculating(true);
     setError(null);
 
-    const payloadParsed = {
-      amount: Number(payload.amount),
-      term: Number(payload.term),
-      loanType: loanTypesMap.get(payload.loanType) ?? 0,
-    };
-
     try {
       const res = await fetch('/api/loans/simulate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payloadParsed),
+        body: JSON.stringify(payload),
         signal: controller.signal,
       });
 

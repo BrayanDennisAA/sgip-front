@@ -31,7 +31,7 @@ export interface CreateLoanRequest {
   userId: string;
   amount: number;
   term: number;
-  loanType: number;
+  loanType: LoanType;
   monthlyIncome: number;
 }
 

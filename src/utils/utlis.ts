@@ -14,6 +14,7 @@ export function formatDate(iso: string) {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
+    timeZone: 'UTC',
   }).format(new Date(iso));
 }
 
@@ -21,5 +22,6 @@ export function formatDateTime(iso: string) {
   return new Intl.DateTimeFormat('es-BO', {
     dateStyle: 'short',
     timeStyle: 'short',
+    timeZone: 'UTC',
   }).format(new Date(iso));
 }

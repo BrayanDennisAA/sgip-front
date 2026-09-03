@@ -4,18 +4,14 @@ import { BackendError } from '@/lib/httpRequest';
 import { CURRENT_USER_ID } from '@/lib/session';
 import { approveLoan, createLoan, rejectLoan } from '@/services/loansService';
 import { ActionResult } from '@/types/httpTypes';
-import { LoanResponse } from '@/types/loans/loanTypes';
+import { LoanResponse, LoanType } from '@/types/loans/loanTypes';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createLoanAction(formData: FormData): Promise<void> {
-  const loanTypeMap: Map<string, number> = new Map([
-    ['Fixed', 0],
-    ['Decreasing', 1],
-  ]);
   const amount = Number(formData.get('amount'));
   const term = Number(formData.get('term'));
-  const loanType = loanTypeMap.get(formData.get('loanType') as string) ?? 0;
+  const loanType = (formData.get('loanType') as LoanType) ?? 'Fixed';
   const monthlyIncome = Number(formData.get('monthlyIncome') ?? 10000);
   
   let loan: LoanResponse;
